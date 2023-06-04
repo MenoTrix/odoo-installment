@@ -1,0 +1,51 @@
+<odoo>
+    <data>
+
+        <!-- Installment Payment Wizard Form View -->
+        <record id="action_installment_payment_wizard" model="ir.actions.act_window">
+            <field name="name">Installment Payment</field>
+            <field name="res_model">installment.payment.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        <menuitem
+                id="installment_wizzard_menu"
+                name="Wizard"
+                action="action_installment_payment_wizard"
+                parent="installment_menu_root"/>
+
+        <record id="view_installment_payment_wizard_form" model="ir.ui.view">
+            <field name="name">installment.payment.wizard.form</field>
+            <field name="model">installment.payment.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="installment_id" readonly="1"/>
+                        <field name="installment_paid"/>
+                        <field name="payment_amount"/>
+                        <field name="payment_method"/>
+                        <field name="date"/>
+                        <field name="notes"/>
+                    </group>
+                    <footer>
+                        <button name="confirm_payment" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="view_installment_payment_wizard_tree" model="ir.ui.view">
+            <field name="name">installment.payment.wizard.tree</field>
+            <field name="model">installment.payment.wizard</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="installment_id"/>
+                    <field name="payment_amount"/>
+                    <field name="payment_method"/>
+                    <field name="notes"/>
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</odoo>

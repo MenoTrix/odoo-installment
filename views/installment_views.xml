@@ -1,0 +1,140 @@
+<odoo>
+    <data>
+        <!-- Action -->
+        <record id="installment_installment_action" model="ir.actions.act_window">
+            <field name="name">Installment</field>
+            <field name="res_model">installment.installment</field>
+            <field name="domain">[]</field>
+            <field name="view_mode">kanban,graph,pivot,tree,form</field>
+        </record>
+
+        <!-- Menus -->
+        <menuitem id="installment_menu_root" name="Installment"/>
+        <menuitem id="customer_installment_menu" name="Installment"
+                  parent="installment_menu_root"/>
+        <menuitem id="customer_installment_menu_1" name="Customer Installment"
+                  action="installment_installment_action" parent="customer_installment_menu"/>
+        <menuitem id="customer_installment_menu_2" name="Payment"
+                  action="account.action_account_payments" parent="customer_installment_menu"/>
+
+
+        <!-- Tree View -->
+        <record id="view_installment_tree" model="ir.ui.view">
+            <field name="name">installment.installment.tree</field>
+            <field name="model">installment.installment</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="reference"/>
+                    <field name="state"/>
+                    <field name="date"/>
+                    <field name="customer"/>
+                    <field name="amount"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_installment_installment_form" model="ir.ui.view">
+            <field name="name">installment.installment.form</field>
+            <field name="model">installment.installment</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_open" string="Open" type="object" class="btn-primary"/>
+                         <button name="%(installment.action_installment_payment_wizard)d" string="Payment" type="action" class="btn-primary"
+                                 context="{'default_installment_id': id}" attrs="{'invisible': ['|',('name', '=', False),('state', '=', 'paid')]}"/>
+                        <button name="settle_installment" string="Settlement" type="object" class="btn-primary" attrs="{'invisible': [('state', '=', 'paid')]}"/>
+                        <field name="state" widget="statusbar" options="{'clickable':'1'}"
+                               status='{"draft": [("draft", "Draft")], "open": [("open", "Open")], "paid": [("paid", "Paid")]}'/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="reference"/>
+                                <field name="date"/>
+                                <field name="customer"/>
+                                <field name="journal"/>
+                                <field name="account"/>
+                            </group>
+                            <group>
+                                <field name="analytic_account"/>
+                                <field name="analytic_tags" widget="many2many_tags"/>
+                                <field name="amount"/>
+                                <field name="paid" readonly="1"/>
+                                <field name="notes"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Payments">
+                                <field name="payment_id" readonly="1">
+                                    <tree>
+                                        <field name="amount"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Kanban View -->
+        <record id="view_installment_installment_kanban" model="ir.ui.view">
+            <field name="name">installment.installment.kanban</field>
+            <field name="model">installment.installment</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile">
+                    <field name="name"/>
+                    <field name="reference"/>
+                    <field name="amount"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_global_click">
+                                <div class="row">
+                                    <div class="col-2 text-right">
+                                        <img t-att-src="kanban_image('res.partner', 'avatar_128', record.customer.raw_value)"
+                                             t-att-title="record.customer.value"
+                                             t-att-alt="record.customer.value"
+                                             class="oe_kanban_avatar o_image_24_cover"/>
+                                    </div>
+                                    <div class="col-6">
+                                        <strong>
+                                            <field name="customer"/>
+                                        </strong>
+                                    </div>
+                                    <br/>
+                                    <br/>
+                                    <div class="col-6">
+                                        <strong>
+                                            <field name="name"/>
+                                        </strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <strong>
+                                            <field name="amount"/>
+                                        </strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="view_installment_search" model="ir.ui.view">
+            <field name="name">installment.installment.search</field>
+            <field name="model">installment.installment</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="customer"/>
+                    <field name="state"/>
+                    <field name="amount"/>
+                </search>
+            </field>
+        </record>
+    </data>
+</odoo>
